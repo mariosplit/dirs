@@ -1,4 +1,4 @@
-module dirs
+module github.com/mariosplit/dirs
 
 go 1.21.6
 
