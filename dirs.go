@@ -211,5 +211,12 @@ func OpenDirectory(path string) error {
 		return fmt.Errorf("unsupported platform")
 	}
 
-	return exec.Command(cmd, args...).Start()
+	fmt.Printf("Executing command: %s %v\n", cmd, args)
+	err := exec.Command(cmd, args...).Start()
+	if err != nil {
+		fmt.Printf("Failed to open directory: %v\n", err)
+		return err
+	}
+	fmt.Printf("Directory opened successfully\n")
+	return nil
 }
