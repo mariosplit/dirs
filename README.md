@@ -1,2 +1,2 @@
-# dirs-package
+# dirs
 dir utilities in GO
