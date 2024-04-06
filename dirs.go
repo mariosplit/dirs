@@ -3,6 +3,7 @@ package dirs
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -13,6 +14,7 @@ import (
 )
 
 var rootDir string
+var selectedDirectory string // Add this at the package level
 
 var rootCmd = &cobra.Command{
 	Use:   "dirs [root directory]",
@@ -58,13 +60,11 @@ var selectDirectoryCmd = &cobra.Command{
 			return
 		}
 
-		// If no directories found, inform the user and return
 		if len(directories) == 0 {
 			fmt.Println("No directories found.")
 			return
 		}
 
-		var selectedDirectory string
 		// Define the survey prompt
 		prompt := &survey.Select{
 			Message: "Choose a directory:",
@@ -184,8 +184,32 @@ func ListDirectories(rootDir string) ([]string, error) {
 }
 
 func ChooseDirectory() (string, error) {
+	// Execute rootCmd which includes handling the directory selection
 	if err := rootCmd.Execute(); err != nil {
 		return "", err
 	}
-	return rootDir, nil
+
+	// Return the globally stored selectedDirectory after command execution
+	return selectedDirectory, nil
+}
+
+func OpenDirectory(path string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "explorer"
+		args = []string{path}
+	case "darwin":
+		cmd = "open"
+		args = []string{path}
+	case "linux":
+		cmd = "xdg-open"
+		args = []string{path}
+	default:
+		return fmt.Errorf("unsupported platform")
+	}
+
+	return exec.Command(cmd, args...).Start()
 }
