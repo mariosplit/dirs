@@ -220,3 +220,66 @@ func OpenDirectory(path string) error {
 	fmt.Printf("Directory opened successfully\n")
 	return nil
 }
+
+func GetDirectoryPath(dirType string) (string, error) {
+	var dir string
+
+	switch dirType {
+	case "exec":
+		execPath, err := os.Executable()
+		if err != nil {
+			return "", fmt.Errorf("error getting executable directory: %w", err)
+		}
+		dir = filepath.Dir(execPath)
+
+	case "output":
+		dir = filepath.Join(".", "output")
+
+	case "userProfile":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = userProfile
+
+	case "desktop":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = filepath.Join(userProfile, "Desktop")
+
+	case "preferences":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = filepath.Join(userProfile, "preferences")
+
+	case "config":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = filepath.Join(userProfile, "config")
+
+	case "dropbox":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = filepath.Join(userProfile, "Dropbox")
+
+	case "oneDrive":
+		userProfile, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("error getting user profile directory: %w", err)
+		}
+		dir = filepath.Join(userProfile, "OneDrive")
+
+	default:
+		return "", fmt.Errorf("unsupported directory type: %s", dirType)
+	}
+
+	return dir, nil
+}
