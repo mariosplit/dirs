@@ -1,6 +1,7 @@
 package dirs
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -80,5 +81,59 @@ func TestGetDirectoryPath(t *testing.T) {
 		t.Error("Expected an error for unsupported directory type, but got nil")
 	} else {
 		t.Logf("Unsupported directory type error: %s", err.Error())
+	}
+}
+
+func TestCreateDirIfNotExists(t *testing.T) {
+	// Test case 1: Create a new directory (overwrite = false)
+	newDir := filepath.Join(os.TempDir(), "test_dir")
+	err := CreateDirIfNotExists(newDir, false)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	defer os.RemoveAll(newDir)
+
+	// Check if the directory exists
+	if _, err := os.Stat(newDir); os.IsNotExist(err) {
+		t.Error("Expected directory to be created, but it doesn't exist")
+	}
+
+	// Test case 2: Try to create an existing directory (overwrite = false)
+	err = CreateDirIfNotExists(newDir, false)
+	if err != nil {
+		t.Errorf("Unexpected error when creating an existing directory: %v", err)
+	}
+
+	// Test case 3: Overwrite an existing directory (overwrite = true)
+	err = CreateDirIfNotExists(newDir, true)
+	if err != nil {
+		t.Errorf("Unexpected error when overwriting an existing directory: %v", err)
+	}
+}
+
+func TestCreateFileIfNotExists(t *testing.T) {
+	// Test case 1: Create a new file (overwrite = false)
+	newFile := filepath.Join(os.TempDir(), "test_file.txt")
+	err := CreateFileIfNotExists(newFile, false)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	defer os.Remove(newFile)
+
+	// Check if the file exists
+	if _, err := os.Stat(newFile); os.IsNotExist(err) {
+		t.Error("Expected file to be created, but it doesn't exist")
+	}
+
+	// Test case 2: Try to create an existing file (overwrite = false)
+	err = CreateFileIfNotExists(newFile, false)
+	if err != nil {
+		t.Errorf("Unexpected error when creating an existing file: %v", err)
+	}
+
+	// Test case 3: Overwrite an existing file (overwrite = true)
+	err = CreateFileIfNotExists(newFile, true)
+	if err != nil {
+		t.Errorf("Unexpected error when overwriting an existing file: %v", err)
 	}
 }

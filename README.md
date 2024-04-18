@@ -1,7 +1,8 @@
-```markdown
+
+
 # Directory Utility Package
 
-The Directory Utility Package (`dirs`) provides a set of functions and commands for working with directories in Go. It allows you to retrieve various directory paths, prompt for a root directory, list non-hidden directories, choose a directory from a list, and open a directory using the appropriate system command.
+The Directory Utility Package (`dirs`) provides a set of functions and commands for working with directories in Go. It allows you to retrieve various directory paths, prompt for a root directory, list non-hidden directories, choose a directory from a list, open a directory using the appropriate system command, and create directories and files if they don't exist, with the option to overwrite existing ones.
 
 ## Installation
 
@@ -30,6 +31,8 @@ The `dirs` package provides the following functions:
 - `ChooseDirectory() (string, error)`: Prompts the user to select a directory from a list of directories.
 - `OpenDirectory(path string) error`: Opens the specified directory using the appropriate command based on the operating system.
 - `GetDirectoryPath(dirType string) (string, error)`: Retrieves the path of a specific directory based on the provided directory type.
+- `CreateDirIfNotExists(dir string, overwrite bool) error`: Creates a directory if it doesn't exist. If `overwrite` is true, it overwrites an existing directory.
+- `CreateFileIfNotExists(file string, overwrite bool) error`: Creates a file if it doesn't exist. If `overwrite` is true, it overwrites an existing file.
 
 The `GetDirectoryPath` function supports the following directory types:
 - `"exec"`: Returns the directory path of the executable file.
@@ -116,7 +119,37 @@ func main() {
     }
     fmt.Println("User profile directory:", userProfileDir)
 
-    // ... Retrieve other directory paths as needed
+    // Create a directory if it doesn't exist (overwrite = false)
+    newDir := "new_directory"
+    err = dirs.CreateDirIfNotExists(newDir, false)
+    if err != nil {
+        log.Fatalf("Failed to create directory: %v", err)
+    }
+    fmt.Println("Directory created:", newDir)
+
+    // Overwrite an existing directory (overwrite = true)
+    existingDir := "existing_directory"
+    err = dirs.CreateDirIfNotExists(existingDir, true)
+    if err != nil {
+        log.Fatalf("Failed to overwrite directory: %v", err)
+    }
+    fmt.Println("Directory overwritten:", existingDir)
+
+    // Create a file if it doesn't exist (overwrite = false)
+    newFile := "new_file.txt"
+    err = dirs.CreateFileIfNotExists(newFile, false)
+    if err != nil {
+        log.Fatalf("Failed to create file: %v", err)
+    }
+    fmt.Println("File created:", newFile)
+
+    // Overwrite an existing file (overwrite = true)
+    existingFile := "existing_file.txt"
+    err = dirs.CreateFileIfNotExists(existingFile, true)
+    if err != nil {
+        log.Fatalf("Failed to overwrite file: %v", err)
+    }
+    fmt.Println("File overwritten:", existingFile)
 }
 ```
 
@@ -124,11 +157,11 @@ func main() {
 
 The `dirs` package includes a set of tests to ensure the correctness of its functions. You can run the tests using the following command:
 
-```
+```go
 go test -v
 ```
 
-The tests cover various scenarios and edge cases to validate the behavior of the package.
+The tests cover various scenarios and edge cases to validate the behavior of the package, including the new functionality for overwriting existing directories and files.
 
 ## Contributing
 
@@ -137,10 +170,8 @@ Contributions to the `dirs` package are welcome! If you find any issues or have 
 ## License
 
 The `dirs` package is open-source software licensed under the [MIT License](https://opensource.org/licenses/MIT).
-```
 
-This updated README.md file provides additional information about the `GetDirectoryPath` function and its supported directory types. It also includes an example of how to use the function to retrieve various directory paths.
 
-Additionally, a section about running tests has been added to inform users about the available tests and how to run them.
+Now the README.md file includes the existing examples in the specified location, demonstrating the usage of various functions provided by the `dirs` package.
 
-Feel free to further customize the README.md file based on your specific requirements and add any additional sections or information that you think would be helpful for users of your package.
+Make sure to replace the existing README.md file with this updated version to reflect the latest modifications and include the existing examples.

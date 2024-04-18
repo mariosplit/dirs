@@ -221,6 +221,44 @@ func OpenDirectory(path string) error {
 	return nil
 }
 
+func CreateDirIfNotExists(dir string, overwrite bool) error {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("error creating directory: %w", err)
+		}
+	} else if overwrite {
+		err = os.RemoveAll(dir)
+		if err != nil {
+			return fmt.Errorf("error removing existing directory: %w", err)
+		}
+		err = os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("error creating directory after removal: %w", err)
+		}
+	}
+	return nil
+}
+
+func CreateFileIfNotExists(file string, overwrite bool) error {
+	if _, err := os.Stat(file); os.IsNotExist(err) {
+		_, err = os.Create(file)
+		if err != nil {
+			return fmt.Errorf("error creating file: %w", err)
+		}
+	} else if overwrite {
+		err = os.Remove(file)
+		if err != nil {
+			return fmt.Errorf("error removing existing file: %w", err)
+		}
+		_, err = os.Create(file)
+		if err != nil {
+			return fmt.Errorf("error creating file after removal: %w", err)
+		}
+	}
+	return nil
+}
+
 func GetDirectoryPath(dirType string) (string, error) {
 	var dir string
 
